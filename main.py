@@ -1,6 +1,6 @@
-from modules.s3_helper import connect_s3, upload_data_to_s3
-from modules.time_helper import get_latest_date, get_list_str_time_btw_two_dates
-from modules.file_helper import  read_data_follow_plant
+from helper.s3_helper import connect_s3, upload_data_to_s3
+from helper.time_helper import get_latest_date, get_list_str_time_btw_two_dates
+from helper.file_helper import  read_json_data
 from datetime import datetime
 from pathlib import Path
 import pytz
@@ -19,17 +19,14 @@ def process_with_date_plant(path = PLANT_CSV_PATH, bucket = JSON_BUCKET):
         latest_day = get_latest_date(path)
         today = datetime.now(pytz.timezone(TIMEZONE)).date()
         list_date_btw = get_list_str_time_btw_two_dates(latest_day, today)
-        read_data_follow_plant(client, bucket, list_date_btw)
+        read_json_data(client, bucket, list_date_btw)
         # run process data json in s3 and upload new csv data with date
     else:
         # get all json date form s3
         print('Run process all json data from s3')
         list_date_btw = 1
-        read_data_follow_plant(client, bucket, list_date_btw)
+        read_json_data(client, bucket, list_date_btw)
     return
-
-
-
 
 if __name__ == '__main__':
     start =  datetime.now()
