@@ -1,11 +1,10 @@
 import json
 import csv
-from helper.time_helper import parse_time, get_list_str_time_btw_two_dates
-from helper.s3_helper import get_list_sub_foder
-import os.path
-from decouple import config
+from utils.times import parse_time, get_list_str_time_btw_two_dates
+from utils.s3 import get_list_sub_foder
+import os
 
-PLANT_CSV_PATH = config('PLANT_CSV_PATH')
+PLANT_CSV_PATH = os.getenv('PLANT_CSV_PATH')
 
 # check step time in json data
 # output 5 or 10 or 15

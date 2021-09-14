@@ -1,17 +1,17 @@
-from helper.s3_helper import connect_s3, upload_data_to_s3
-from helper.time_helper import get_latest_date, get_list_str_time_btw_two_dates
-from helper.file_helper import  read_json_data
+from utils.s3 import connect_s3, upload_data_to_s3
+from utils.times import get_latest_date, get_list_str_time_btw_two_dates
+from utils.files import  read_json_data
 from datetime import datetime
 from pathlib import Path
 import pytz
-from decouple import config
+import os
 
-ACCESS_KEY = config('ACCESS_KEY')
-SECRET_KEY = config('SECRET_KEY')
-JSON_BUCKET = config('JSON_BUCKET')
-CSV_BUCKET = config('CSV_BUCKET')
-PLANT_CSV_PATH = config('PLANT_CSV_PATH')
-TIMEZONE = config('TIMEZONE')
+ACCESS_KEY = os.getenv('ACCESS_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
+JSON_BUCKET = os.getenv('JSON_BUCKET')
+CSV_BUCKET = os.getenv('CSV_BUCKET')
+PLANT_CSV_PATH = os.getenv('PLANT_CSV_PATH')
+TIMEZONE = os.getenv('TIMEZONE')
 
 def process_with_date_plant(path = PLANT_CSV_PATH, bucket = JSON_BUCKET):
     if Path(path).is_dir():
@@ -29,6 +29,7 @@ def process_with_date_plant(path = PLANT_CSV_PATH, bucket = JSON_BUCKET):
     return
 
 if __name__ == '__main__':
+    print('Start ....')
     start =  datetime.now()
     # connect s3
     client = connect_s3(ACCESS_KEY,SECRET_KEY)

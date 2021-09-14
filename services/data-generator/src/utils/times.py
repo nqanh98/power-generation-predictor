@@ -1,8 +1,8 @@
 from datetime import datetime, date, timedelta
-import os.path
+import os
 import pytz
-from decouple import config
-TIMEZONE = config('TIMEZONE')
+
+TIMEZONE = os.getenv('TIMEZONE')
 
 # check latest modified file
 def get_latest_date(path):
