@@ -84,15 +84,15 @@ def read_json_data(client, bucket , list_date_btw):
         for area in get_list_sub_foder(client, bucket):
             area = area + 'pcs/'
             print(area)
-            try:
-                for year in get_list_sub_foder(client, bucket, area):
-                    for month in get_list_sub_foder(client, bucket, year):
-                        for day in get_list_sub_foder(client, bucket, month):
-                            day = day + 'pcs_summary/'
-                            response = client.list_objects(Bucket=bucket, Prefix=day)
-                            for content in response['Contents']:
-                                # read json data and write
-                                print(content['Key'])
+            for year in get_list_sub_foder(client, bucket, area):
+                for month in get_list_sub_foder(client, bucket, year):
+                    for day in get_list_sub_foder(client, bucket, month):
+                        day = day + 'pcs_summary/'
+                        response = client.list_objects(Bucket=bucket, Prefix=day)
+                        for content in response['Contents']:
+                            # read json data and write
+                            print(content['Key'])
+                            try:
                                 result = client.get_object(Bucket=bucket, Key=content['Key'])
                                 data = result["Body"].read()
                                 json_data = json.loads(data)
@@ -107,9 +107,11 @@ def read_json_data(client, bucket , list_date_btw):
                                     # create folder 30 minutes and write
                                     create_file_output_and_write(content['Key'], json_data, 30)
                                     continue
-                print(f'Done {area}')
-            except:
-                continue
+                            except:
+                                continue
+            print(f'Done {area}')
+            # test 1 area
+            # break
         print('Done all')
         return 0
     elif len(list_date_btw) >=1:
