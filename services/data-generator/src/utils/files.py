@@ -22,6 +22,7 @@ def get_name_output(path, step_time):
     list_worlds = path.split('/')
     last_world = list_worlds[-1]
     pcs_name = (last_world.split(list_worlds[0])[1]).split('_')[1]
+    # print(pcs_name)
     file_name_output =  PLANT_CSV_PATH + list_worlds[0] + '/' + pcs_name + '/'+ str(step_time) + '/' + pcs_name + '.csv'
     folder_name_output = PLANT_CSV_PATH + list_worlds[0] + '/' + pcs_name + '/'+ str(step_time)
     return (file_name_output, folder_name_output)
@@ -83,29 +84,32 @@ def read_json_data(client, bucket , list_date_btw):
         for area in get_list_sub_foder(client, bucket):
             area = area + 'pcs/'
             print(area)
-            for year in get_list_sub_foder(client, bucket, area):
-                for month in get_list_sub_foder(client, bucket, year):
-                    for day in get_list_sub_foder(client, bucket, month):
-                        day = day + 'pcs_summary/'
-                        response = client.list_objects(Bucket=bucket, Prefix=day)
-                        for content in response['Contents']:
-                            # read json data and write
-                            print(content['Key'])
-                            result = client.get_object(Bucket=bucket, Key=content['Key'])
-                            data = result["Body"].read()
-                            json_data = json.loads(data)
-                            if check_step_json_data(json_data) != 5:
-                                print(f'Format structure data of {area} wrong ! Not 5 minutes ')
-                                break
-                            else:
-                                # create folder 5 minutes and write
-                                create_file_output_and_write(content['Key'], json_data, 5)
-                                # create folder 10 minutes and write
-                                create_file_output_and_write(content['Key'], json_data, 10)
-                                # create folder 30 minutes and write
-                                create_file_output_and_write(content['Key'], json_data, 30)
-                                continue
-            print(f'Done {area}')
+            try:
+                for year in get_list_sub_foder(client, bucket, area):
+                    for month in get_list_sub_foder(client, bucket, year):
+                        for day in get_list_sub_foder(client, bucket, month):
+                            day = day + 'pcs_summary/'
+                            response = client.list_objects(Bucket=bucket, Prefix=day)
+                            for content in response['Contents']:
+                                # read json data and write
+                                print(content['Key'])
+                                result = client.get_object(Bucket=bucket, Key=content['Key'])
+                                data = result["Body"].read()
+                                json_data = json.loads(data)
+                                if check_step_json_data(json_data) != 5:
+                                    print(f'Format structure data of {area} wrong ! Not 5 minutes ')
+                                    break
+                                else:
+                                    # create folder 5 minutes and write
+                                    create_file_output_and_write(content['Key'], json_data, 5)
+                                    # create folder 10 minutes and write
+                                    create_file_output_and_write(content['Key'], json_data, 10)
+                                    # create folder 30 minutes and write
+                                    create_file_output_and_write(content['Key'], json_data, 30)
+                                    continue
+                print(f'Done {area}')
+            except:
+                continue
         print('Done all')
         return 0
     elif len(list_date_btw) >=1:

@@ -11,7 +11,9 @@ RUN pip3 --version
 
 RUN mkdir ./scripts
 ADD /src ./scripts
-COPY requirements.txt ./scripts
+RUN chmod +x ./scripts/schedule.sh
 
+COPY requirements.txt ./scripts
 RUN pip install --no-cache-dir -r ./scripts/requirements.txt
-CMD [ "python", "./scripts/main.py" ]
+# CMD [ "python", "./scripts/main.py" ]
+ENTRYPOINT ["./scripts/schedule.sh"]
