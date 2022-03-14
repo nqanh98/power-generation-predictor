@@ -1,0 +1,35 @@
+version: '3.1'
+
+services:
+  data_generator:
+    container_name: data_generator
+    build:
+      context: ./services/data-generator
+      dockerfile: Dockerfile
+    environment:
+      TERM: linux
+      LANG: "C.UTF-8"
+      LOG_ROTATION_DAY: 7
+      APP_ENV: production
+      ACCESS_KEY: access_key_here
+      SECRET_KEY: secret_key_here
+      JSON_BUCKET: json_bucket_name
+      CSV_BUCKET: csv_bucket_name
+      PLANT_CSV_PATH: plant_csv_path
+      TIMEZONE: timezone
+    networks:
+      - power_predictor
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "2"
+    restart: "no"
+    volumes:
+      - ./src:/src:cached
+networks:
+  power_predictor:
+    driver: bridge
